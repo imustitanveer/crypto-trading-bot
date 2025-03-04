@@ -1,0 +1,8 @@
+scikit-learn
+pandas
+python-binance
+pickle
+numpy
+matplotlib
+xgboost
+lightgbm
