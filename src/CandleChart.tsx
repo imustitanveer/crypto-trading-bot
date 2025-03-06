@@ -181,7 +181,7 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
   return (
     <div
       ref={chartContainerRef}
-      className="p-2 bg-slate-900 rounded-xl md:rounded-2xl relative h-100 lg:h-150 overflow-hidden"
+      className="p-2 bg-slate-900 rounded-xl md:rounded-2xl relative h-100 lg:h-153 overflow-hidden shadow-2xl"
     />
   );
 };

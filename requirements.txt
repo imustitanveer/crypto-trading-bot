@@ -6,3 +6,6 @@ numpy
 matplotlib
 xgboost
 lightgbm
+fastapi
+uvicorn
+joblib

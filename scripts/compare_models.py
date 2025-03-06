@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 # Initialize the Binance Client
-client = Client()  
+client = Client()
 
-# Fetch Live Data from Binance (last 12 hours of 1h klines)
-klines = client.get_historical_klines("BNBUSDT", Client.KLINE_INTERVAL_1HOUR, "12 hours ago UTC")
+# Fetch Live Data from Binance (last 40 hours of 1h klines to have enough data for 20-candle lookback)
+klines = client.get_historical_klines("BNBUSDT", Client.KLINE_INTERVAL_1HOUR, "40 hours ago UTC")
 
 # Process the fetched klines into a DataFrame
 data = []
@@ -29,20 +29,37 @@ for k in klines:
     data.append(row)
 
 df_live = pd.DataFrame(data)
-print("Live Data:")
-print(df_live)
 
-# Prepare features and target
-features = ['Open', 'High', 'Low', 'Volume BNB', 'Volume USDT', 'tradecount']
+# Generate feature columns based on the last 20 candles
+LOOKBACK = 20
+for i in range(1, LOOKBACK + 1):
+    df_live[f'Open_t-{i}'] = df_live['Open'].shift(i)
+    df_live[f'High_t-{i}'] = df_live['High'].shift(i)
+    df_live[f'Low_t-{i}'] = df_live['Low'].shift(i)
+    df_live[f'Volume BNB_t-{i}'] = df_live['Volume BNB'].shift(i)
+    df_live[f'Volume USDT_t-{i}'] = df_live['Volume USDT'].shift(i)
+    df_live[f'tradecount_t-{i}'] = df_live['tradecount'].shift(i)
+
+# Drop NaN values caused by shifting
+df_live = df_live.dropna().reset_index(drop=True)
+
+# Select features and target
+features = []
+for i in range(1, LOOKBACK + 1):
+    features.extend([
+        f'Open_t-{i}', f'High_t-{i}', f'Low_t-{i}',
+        f'Volume BNB_t-{i}', f'Volume USDT_t-{i}', f'tradecount_t-{i}'
+    ])
+
 X_live = df_live[features]
 y_actual = df_live['Close']
 
 # Load the three saved models
-with open('models/bnb_regression_model.pkl', 'rb') as f:
+with open('scripts/models/bnb_regression_model.pkl', 'rb') as f:
     model_lr = pickle.load(f)
-with open('models/bnb_xgboost_model.pkl', 'rb') as f:
+with open('scripts/models/bnb_xgboost_model.pkl', 'rb') as f:
     model_xgb = pickle.load(f)
-with open('models/bnb_lightgbm_model.pkl', 'rb') as f:
+with open('scripts/models/bnb_lightgbm_model.pkl', 'rb') as f:
     model_lgb = pickle.load(f)
 
 # Dictionary to store models for easy iteration

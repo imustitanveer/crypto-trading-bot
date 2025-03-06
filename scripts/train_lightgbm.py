@@ -7,15 +7,23 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pickle
 
 # 1. Load Data
-df = pd.read_csv("data/Binance_BNBUSDT_1h.csv", parse_dates=["Date"])
+df = pd.read_csv("scripts/data/transformed_BNBUSDT_data.csv", parse_dates=["Date"])
 df.sort_values("Date", inplace=True)
 df.drop_duplicates(subset=["Date"], keep="last", inplace=True)
 
-# 2. Select Features and Target
-features = ['Open', 'High', 'Low', 'Volume BNB', 'Volume USDT', 'tradecount']
-target = 'Close'
+# Define features (last 20 candles' Open, High, Low, Volume, Trade Count)
+LOOKBACK = 20
+features = []
+
+for i in range(1, LOOKBACK + 1):
+    features.extend([
+        f'Open_t-{i}', f'High_t-{i}', f'Low_t-{i}',
+        f'Volume BNB_t-{i}', f'Volume USDT_t-{i}', f'tradecount_t-{i}'
+    ])
+
+# Select input features (X) and target variable (y)
 X = df[features]
-y = df[target]
+y = df['Close_t']  # Predicting current candle's close price
 
 # 3. Split Data (70-30 split)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -47,6 +55,6 @@ plt.legend()
 plt.show()
 
 # 8. Save the Model for API Use
-with open("models/bnb_lightgbm_model.pkl", "wb") as f:
+with open("scripts/models/bnb_lightgbm_model.pkl", "wb") as f:
     pickle.dump(model_lgb, f)
 print("LightGBM model saved as 'bnb_lightgbm_model.pkl'")
