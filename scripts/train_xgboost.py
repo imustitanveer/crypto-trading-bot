@@ -11,22 +11,29 @@ df = pd.read_csv("scripts/data/transformed_BNBUSDT_data.csv", parse_dates=["Date
 df.sort_values("Date", inplace=True)
 df.drop_duplicates(subset=["Date"], keep="last", inplace=True)
 
-# Define features (last 20 candles' Open, High, Low, Volume, Trade Count)
+# Define features: Last 20 candles (excluding High & Low for t-0)
 LOOKBACK = 20
 features = []
 
-for i in range(1, LOOKBACK + 1):
+for i in range(1, LOOKBACK + 1):  # Use past 20 candles
     features.extend([
         f'Open_t-{i}', f'High_t-{i}', f'Low_t-{i}',
         f'Volume BNB_t-{i}', f'Volume USDT_t-{i}', f'tradecount_t-{i}'
     ])
 
+# Also include the current candle's features **without High & Low**
+features.extend([
+    'Open_t', 'Volume BNB_t', 'Volume USDT_t', 'tradecount_t'
+])
+
 # Select input features (X) and target variable (y)
 X = df[features]
-y = df['Close_t']  # Predicting current candle's close price
+y = df['Close_t']  # Predicting the current candle's close price
 
-# 3. Split Data (70-30 split)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
 
 # 4. Train XGBoost Model
 model_xgb = xgboost.XGBRegressor(objective='reg:squarederror', n_estimators=100, random_state=42)

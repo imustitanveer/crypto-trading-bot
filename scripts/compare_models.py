@@ -32,7 +32,7 @@ df_live = pd.DataFrame(data)
 
 # Generate feature columns based on the last 20 candles
 LOOKBACK = 20
-for i in range(1, LOOKBACK + 1):
+for i in range(1, LOOKBACK + 1):  # Using past 20 candles
     df_live[f'Open_t-{i}'] = df_live['Open'].shift(i)
     df_live[f'High_t-{i}'] = df_live['High'].shift(i)
     df_live[f'Low_t-{i}'] = df_live['Low'].shift(i)
@@ -40,10 +40,16 @@ for i in range(1, LOOKBACK + 1):
     df_live[f'Volume USDT_t-{i}'] = df_live['Volume USDT'].shift(i)
     df_live[f'tradecount_t-{i}'] = df_live['tradecount'].shift(i)
 
+# Include the current candle's Open, Volume, and Trade Count (excluding High & Low)
+df_live["Open_t"] = df_live["Open"]
+df_live["Volume BNB_t"] = df_live["Volume BNB"]
+df_live["Volume USDT_t"] = df_live["Volume USDT"]
+df_live["tradecount_t"] = df_live["tradecount"]
+
 # Drop NaN values caused by shifting
 df_live = df_live.dropna().reset_index(drop=True)
 
-# Select features and target
+# Select features (adjusted to exclude High & Low for the current candle)
 features = []
 for i in range(1, LOOKBACK + 1):
     features.extend([
@@ -51,6 +57,10 @@ for i in range(1, LOOKBACK + 1):
         f'Volume BNB_t-{i}', f'Volume USDT_t-{i}', f'tradecount_t-{i}'
     ])
 
+# Add current candle's adjusted features (without High & Low)
+features.extend(['Open_t', 'Volume BNB_t', 'Volume USDT_t', 'tradecount_t'])
+
+# Define input features (X) and target variable (y)
 X_live = df_live[features]
 y_actual = df_live['Close']
 

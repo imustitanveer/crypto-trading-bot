@@ -17,6 +17,12 @@ for i in range(1, LOOKBACK + 1):  # Shift from 1 to 20
     df[f'Volume USDT_t-{i}'] = df['Volume USDT'].shift(i)
     df[f'tradecount_t-{i}'] = df['tradecount'].shift(i)
 
+# Exclude High and Low for t-0 (the most recent candle)
+df["Open_t"] = df["Open"]
+df["Close_t"] = df["Close"]
+df["Volume BNB_t"] = df["Volume BNB"]
+df["Volume USDT_t"] = df["Volume USDT"]
+df["tradecount_t"] = df["tradecount"]
 
 # Drop rows with NaN values (first LOOKBACK rows will be NaN)
 df = df.iloc[LOOKBACK:].reset_index(drop=True)
