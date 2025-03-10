@@ -87,7 +87,7 @@ export function useAutoTrade() {
     }
   };
 
-  const API_BASE_URL = "https://www.api.aibymusti.com";
+  const API_BASE_URL = "https://api.aibymusti.com";
 
   // Fetch prediction from FastAPI
   const fetchPrediction = async (model: string, features: number[]) => {
