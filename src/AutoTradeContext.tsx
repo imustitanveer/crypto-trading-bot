@@ -87,7 +87,7 @@ export function useAutoTrade() {
     }
   };
 
-  const API_BASE_URL = "http://44.205.11.134:80";
+  const API_BASE_URL = "https://44.205.11.134:80";
 
   // Fetch prediction from FastAPI
   const fetchPrediction = async (model: string, features: number[]) => {
