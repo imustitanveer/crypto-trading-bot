@@ -1,5 +1,6 @@
 import { useAutoTradeContext } from "./AutoTradeContext";
 import Profile from "./assets/profile.png";
+import Logo from "./assets/logo.png"
 
 function NavbarStats() {
   const { balance, pnl } = useAutoTradeContext();
@@ -9,7 +10,7 @@ function NavbarStats() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/30 backdrop-blur-sm shadow-md px-4 py-2 grid grid-cols-3 sm:grid-cols-4 items-center gap-3">
       <div className="flex items-center">
-        <img src="/src/assets/logo.png" className="h-8 w-8" alt="Logo"></img>
+        <img src={Logo} className="h-8 w-8" alt="Logo"></img>
         <h1 className="text-lg sm:text-2xl font-bold text-white">TradeBotX</h1>
       </div>
       {/* Left Section: Profile */}
