@@ -11,7 +11,7 @@ function OrderBook() {
 
   return (
     <div>
-      <ScrollArea className="h-[150px] w-full rounded-md text-white p-4 bg-gray-800">
+      <ScrollArea className="h-[150px] w-full rounded-md bg-white/30 backdrop-blur-xl dark:text-white p-4 dark:bg-gray-800">
         {sortedOrders.length === 0 ? (
           <div className="text-gray-500">No orders yet.</div>
         ) : (

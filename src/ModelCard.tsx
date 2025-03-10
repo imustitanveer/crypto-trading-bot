@@ -43,11 +43,11 @@ function ModelCard() {
   return (
     <div className="bg-white/30 backdrop-blur-xl rounded-2xl p-4 flex flex-col gap-4 md:p-8 mt-4 shadow-2xl">
       <div className="flex items-center justify-center">
-        <h1 className="text-lg md:text-xl font-bold text-white">
+        <h1 className="text-lg md:text-xl font-bold light:text-zinc-900 dark:text-white">
           Auto Trade
         </h1>
       </div>
-      <h1 className="text-xs md:text-md font-semibold text-white">
+      <h1 className="text-xs md:text-md font-semibold light:text-zinc-900 dark:text-white">
         Choose a Model
       </h1>
       <Select onValueChange={setSelectedModel} disabled={tradeActive}>
@@ -67,7 +67,7 @@ function ModelCard() {
         </SelectContent>
       </Select>
 
-      <h1 className="text-xs md:text-md font-semibold text-white">
+      <h1 className="text-xs md:text-md font-semibold light:text-zinc-900 dark:text-white">
         Set Leverage
       </h1>
       <Slider
@@ -79,7 +79,7 @@ function ModelCard() {
       />
 
       <div className="flex flex-row gap-2 items-center">
-        <h1 className="text-xs md:text-md font-semibold text-white w-2/3">
+        <h1 className="text-xs md:text-md font-semibold light:text-zinc-900 dark:text-white w-2/3">
           Trade Amount ($)
         </h1>
         <div className="w-1/3 flex justify-end">
@@ -104,7 +104,7 @@ function ModelCard() {
         />
       </div>
 
-      <h1 className="text-xs md:text-md font-semibold text-white">
+      <h1 className="text-xs md:text-md font-semibold light:text-zinc-900 dark:text-white">
         Hours to Auto Trade
       </h1>
       <div className="flex flex-row gap-2 items-center">

@@ -59,8 +59,8 @@ function Slider({
       </SliderPrimitive.Root>
 
       {/* Leverage Markers */}
-      <div className="relative w-full flex justify-between text-sm text-gray-200 mt-2">
-        {['spot', '10x', '25x', '40x', '50x'].map((value) => (
+      <div className="relative w-full flex justify-between text-sm light:text-zinc-900 dark:text-gray-200 mt-2">
+        {['spot', '20x', '30x', '40x', '50x'].map((value) => (
           <span key={value} className="text-center w-10">{value}</span>
         ))}
       </div>
