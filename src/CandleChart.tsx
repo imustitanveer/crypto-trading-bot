@@ -69,7 +69,7 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
     const initialWidth = container.clientWidth;
     const initialHeight = container.clientHeight;
 
-    // Create the chart with initial dimensions
+    // Create the chart
     const chart = createChart(container, {
       width: initialWidth,
       height: initialHeight,
@@ -81,6 +81,8 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
       timeScale: { timeVisible: true, borderColor: "#2B2B43", barSpacing: 10 },
     });
     chartRef.current = chart;
+
+    // Candlestick series
     const candleSeries = chart.addCandlestickSeries();
     seriesRef.current = candleSeries;
 
@@ -91,7 +93,7 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
     };
     initializeChart();
 
-    // Create and append tooltip element
+    // Create tooltip element
     const tooltip = document.createElement("div");
     tooltip.style.position = "absolute";
     tooltip.style.background = "rgba(0, 0, 0, 0.8)";
@@ -104,17 +106,23 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
     tooltipRef.current = tooltip;
     container.appendChild(tooltip);
 
-    // Subscribe to crosshair move event for tooltip positioning
+    // Crosshair move event for tooltip
     chart.subscribeCrosshairMove((param) => {
-      if (!param || !param.point || !tooltipRef.current) {
-        tooltipRef.current.style.display = "none";
+      if (!param || !param.point) {
+        if (tooltipRef.current) {
+          tooltipRef.current.style.display = "none";
+        }
         return;
       }
+
       const data = param.seriesData.get(candleSeries) as CandlestickData | undefined;
-      if (!data) {
-        tooltipRef.current.style.display = "none";
+      if (!data || !tooltipRef.current) {
+        if (tooltipRef.current) {
+          tooltipRef.current.style.display = "none";
+        }
         return;
       }
+
       tooltipRef.current.innerHTML = `
         <strong>Open:</strong> ${data.open.toFixed(2)} 
         <strong>High:</strong> ${data.high.toFixed(2)} 
@@ -133,14 +141,15 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
       let left = param.point.x + offsetX;
       let top = param.point.y - tooltipHeight - offsetY;
 
-      // Clamp horizontally within the container
+      // Clamp horizontally
       if (left + tooltipWidth > containerWidth) {
         left = containerWidth - tooltipWidth - 5;
       }
       if (left < 5) {
         left = 5;
       }
-      // Clamp vertically within the container
+
+      // Clamp vertically
       if (top < 5) {
         top = 5;
       }
@@ -160,7 +169,7 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
       }
     }, 1000);
 
-    // Add a ResizeObserver to update chart dimensions on container resize
+    // ResizeObserver to update chart dimensions
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const newWidth = entry.contentRect.width;
@@ -170,11 +179,14 @@ const CandleChart = ({ symbol = "BNBUSDT" }: { symbol?: string }) => {
     });
     resizeObserver.observe(container);
 
+    // Cleanup
     return () => {
       clearInterval(updateInterval);
       resizeObserver.disconnect();
       chart.remove();
-      tooltipRef.current?.remove();
+      if (tooltipRef.current) {
+        tooltipRef.current.remove();
+      }
     };
   }, [symbol]);
 
