@@ -11,15 +11,12 @@ lgbm_model = joblib.load("models/bnb_lightgbm_model.pkl")
 
 app = FastAPI()
 
-# Define allowed origins
-origins = ["http://localhost:5173"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 class PredictionRequest(BaseModel):

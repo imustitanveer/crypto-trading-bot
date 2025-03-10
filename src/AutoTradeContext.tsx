@@ -85,10 +85,12 @@ export function useAutoTrade() {
     }
   };
 
+  const API_BASE_URL = "http://44.205.11.134:80"; 
+
   // Fetch prediction from FastAPI; expects an array of 124 features.
   const fetchPrediction = async (model: string, features: number[]) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/predict/${model}`, {
+      const res = await fetch(`${API_BASE_URL}/predict/${model}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ features }),
@@ -205,7 +207,7 @@ export function useAutoTrade() {
       )
     );
     // Return the original wager plus P/L.
-    setBalance((prev) => prev + finalPnl);
+    setBalance((prev) => prev + tradeDetails.tradeAmount + finalPnl);
     setPnl(finalPnl);
     setTradeActive(false);
     setTradeDetails(null);
